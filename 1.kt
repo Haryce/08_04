@@ -1,4 +1,4 @@
-class Room(val description: String, val options: List<Option> = emptyList()) {
+class Room(val description: String, val options: List<OP> = emptyList()) {
     fun show() {
         println(description)
         if (options.isNotEmpty()) {
@@ -9,25 +9,23 @@ class Room(val description: String, val options: List<Option> = emptyList()) {
         }
     }
 }
-
-class Option(val number: Int, val description: String, val nextRoom: Int)
-
+class OP(val number: Int, val description: String, val nextRoom: Int)
 class Game {
     private var currentRoom = 1
     private val rooms = mapOf(
         1 to Room(
             "You are in a dark room, you see 3 doors (left, right, middle)",
             listOf(
-                Option(1, "Go left", 2),
-                Option(2, "Go right", 3),
-                Option(3, "Go middle", 4)
+                OP(1, "Go left", 2),
+                OP(2, "Go right", 3),
+                OP(3, "Go middle", 4)
             )
         ),
         2 to Room(
             "You entered the left room",
             listOf(
-                Option(1, "Go left", -1),
-                Option(2, "Go back", 1)
+                OP(1, "Go left", -1),
+                OP(2, "Go back", 1)
             )
         ),
         3 to Room("You entered the middle room and see a white room and a dark portal"),
@@ -36,12 +34,11 @@ class Game {
         6 to Room(
             "You've entered the dark portal. You can either try to escape or stay here forever.",
             listOf(
-                Option(1, "Try to escape", 1),
-                Option(2, "Stay here forever", -1)
+                OP(1, "Try to escape", 1),
+                OP(2, "Stay here forever", -1)
             )
         )
     )
-
     fun start() {
         while (currentRoom != -1) {
             val room = rooms[currentRoom] ?: break
@@ -51,13 +48,12 @@ class Game {
                 currentRoom = -1
                 continue
             }
-
             when (val choice = readLine()?.toIntOrNull()) {
                 in room.options.map { it.number } -> {
                     val option = room.options.first { it.number == choice }
                     
                     if (currentRoom == 3) {
-                        handlePortal()
+                        DBportal()
                     } else {
                         currentRoom = option.nextRoom
                     }
@@ -66,8 +62,7 @@ class Game {
             }
         }
     }
-
-    private fun handlePortal() {
+    private fun DBportal() {
         println("You approach a dark portal and are asked: What are the best 2 items in Dota?")
         if (readLine()?.equals("Radiance and Boots of Travel", ignoreCase = true) == true) {
             println("Correct! You enter the portal.")
@@ -78,7 +73,6 @@ class Game {
         }
     }
 }
-
 fun main() {
     Game().start()
 }
